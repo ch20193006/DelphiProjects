@@ -1,0 +1,82 @@
+unit Unit3;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons;
+
+type
+  TForm3 = class(TForm)
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    ComboBox1: TComboBox;
+    Label5: TLabel;
+    Edit1: TEdit;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    procedure ComboBox1Select(Sender: TObject);
+    procedure BitBtn2Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+uses Unit1;
+
+{$R *.dfm}
+
+procedure TForm3.ComboBox1Select(Sender: TObject);
+begin
+  edit1.SetFocus
+end;
+
+procedure TForm3.BitBtn2Click(Sender: TObject);
+begin
+  form3.Close
+end;
+
+procedure TForm3.BitBtn1Click(Sender: TObject);
+label 1;
+begin
+  if  (Combobox1.Text='') or  (Edit1.Text='') then
+  begin
+    ShowMessage('Заполните все поля');
+    goto 1;
+  end;
+  try
+  with  Form1.IBQuery1  do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT REZ FROM CONT_ADD_DATA(:P1,:P2,:P3)');
+      ParamByName('P1').AsString:=ComboBox1.Text;
+      ParamByName('P2').AsString:=Edit1.Text;
+      ParamByName('P3').AsInteger:=Form1.bearer_id;
+      Active:=  True;
+      if FieldByName('Rez').Value='OK' then
+      begin
+        ShowMessage('Контакт успешно добавлен.');
+        Form3.Close;
+        Form1.BitBtn1.OnClick(Sender);
+      end
+      else
+      ShowMessage(FieldByName('Rez').Value);
+    end;
+   except
+    on E:Exception do
+      ShowMessage(E.ClassName+' ошибка : '+E.Message);
+  end;
+
+1:
+end;
+
+end.
